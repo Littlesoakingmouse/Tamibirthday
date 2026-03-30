@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pac-Man Game 🎮</title>
+  <meta name="description" content="Pac-Man game with birthday surprise ending!" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <!-- Background stars -->
+  <div id="stars"></div>
+
+  <!-- ═══════════════════════════════════════════════
+       GAME SCREEN
+  ═══════════════════════════════════════════════ -->
+  <div id="game-screen">
+    <h1 class="title">PAC-MAN</h1>
+
+    <div class="info-bar">
+      <div class="info-item">
+        <span class="info-label">Score</span>
+        <span class="info-val" id="scoreEl">0</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Best</span>
+        <span class="info-val" id="bestEl">0</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Level</span>
+        <span class="info-val" id="levelEl">1</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Lives</span>
+        <div class="lives-row" id="livesEl">
+          <div class="life-dot" id="ld0"></div>
+          <div class="life-dot" id="ld1"></div>
+          <div class="life-dot" id="ld2"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap" id="cw">
+      <canvas id="gc"></canvas>
+
+      <!-- Start overlay -->
+      <div class="ov" id="ovStart">
+        <div class="ov-title y">PAC-MAN</div>
+        <div class="ov-sub">ĂN HẾT ĐIỂM · TRÁNH MA · SỐNG SÓT</div>
+        <div class="ctrl-hint">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px">
+            <div style="display:flex;gap:3px">
+              <div class="key">↑</div>
+            </div>
+            <div style="display:flex;gap:3px">
+              <div class="key">←</div>
+              <div class="key">↓</div>
+              <div class="key">→</div>
+            </div>
+            <span class="hint-lbl">DI CHUYỂN</span>
+          </div>
+          <div style="width:1px;height:36px;background:rgba(255,255,255,.12)"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px">
+            <div class="key">P</div>
+            <span class="hint-lbl">PAUSE</span>
+          </div>
+        </div>
+        <button class="btn" id="btnStart">▶ BẮT ĐẦU</button>
+      </div>
+
+      <!-- Game Over overlay -->
+      <div class="ov hide" id="ovOver">
+        <div class="ov-title r">GAME OVER</div>
+        <div class="ov-sc" id="overSc"></div>
+        <button class="btn" id="btnRestart">↺ CHƠI LẠI</button>
+      </div>
+
+      <!-- Win overlay -->
+      <div class="ov hide" id="ovWin">
+        <div class="ov-title c">LEVEL CLEAR!</div>
+        <div class="ov-sc" id="winSc"></div>
+        <button class="btn" id="btnNext">▶ TIẾP THEO</button>
+      </div>
+
+      <!-- Pause overlay -->
+      <div class="ov hide" id="ovPause">
+        <div class="ov-title y">TẠM DỪNG</div>
+        <div class="ov-sub">Nhấn P để tiếp tục</div>
+        <button class="btn" id="btnResume">▶ TIẾP TỤC</button>
+      </div>
+    </div>
+
+    <!-- Mobile controls -->
+    <div class="mobile-ctrl">
+      <div class="mb-row">
+        <div class="mb-btn" id="mbU">↑</div>
+      </div>
+      <div class="mb-row">
+        <div class="mb-btn" id="mbL">←</div>
+        <div class="mb-btn" id="mbD">↓</div>
+        <div class="mb-btn" id="mbR">→</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       TRANSITION SCREEN
+  ═══════════════════════════════════════════════ -->
+  <div id="transition-screen">
+    <div class="transition-particles" id="trans-particles"></div>
+    <div class="transition-text" id="ts-line1" style="display:none">✨ SURPRISE ✨</div>
+    <div class="transition-sub" id="ts-line2" style="display:none">Có điều gì đó đặc biệt đang chờ bạn...</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       BIRTHDAY SCREEN
+  ═══════════════════════════════════════════════ -->
+  <div id="birthday-screen">
+    <div class="confetti-field" id="confetti-field"></div>
+
+    <div class="bday-title">🎂 Chúc Mừng Sinh Nhật! 🎂</div>
+    <div class="emoji-row">🎉🎈💕🌸🎁✨</div>
+
+    <div class="letter-wrap" id="envelope-btn">
+      <div class="envelope-preview">
+        <span class="envelope-icon">💌</span>
+        <span>Có một lá thư gửi đến bạn...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       LETTER 
+  ═══════════════════════════════════════════════ -->
+  <div class="letter-modal" id="letter-modal">
+    <div class="letter-card">
+      <div class="letter-decoration">𐙚 ‧₊˚ ⋅)</div>
+
+      <!-- Question area (initial) -->
+      <div id="question-area">
+        <div class="letter-greeting">
+          To the speacial one ~
+        </div>
+        <div class="letter-body">
+
+
+        </div>
+        <div class="letter-question">
+          Can I have your time after 10PM tomorrow 🌸
+        </div>
+        <div class="letter-choices">
+          <button class="btn-yes" id="btn-yes">Có</button>
+          <button class="btn-no" id="btn-no">Không</button>
+        </div>
+      </div>
+
+      <!-- Yes celebration (shown after clicking Yes) -->
+      <div class="yes-celebration" id="yes-celebration">
+
+        <div class="yes-big">Can't wait to see you!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts (order matters) -->
+  <script src="js/constants.js"></script>
+  <script src="js/pacman.js"></script>
+  <script src="js/ghosts.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
